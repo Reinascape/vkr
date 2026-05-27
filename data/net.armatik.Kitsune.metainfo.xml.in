@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>net.armatik.Kitsune</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <name>Project kitsune</name>
+  <summary>Watch media</summary>
+  <description>
+    <p>
+      Libadwaita client for watching media by the AniLiberty team.
+      Browse the catalog, search for titles, and watch episodes with the built-in player.
+    </p>
+  </description>
+
+  <keywords>
+    <keyword>anime</keyword>
+    <keyword>russian</keyword>
+    <keyword>anilibria</keyword>
+    <keyword>aniliberty</keyword>
+  </keywords>
+
+  <launchable type="desktop-id">net.armatik.Kitsune.desktop</launchable>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#F7776A</color>
+    <color type="primary" scheme_preference="dark">#90212C</color>
+  </branding>
+
+  <url type="homepage">none</url>
+  <url type="bugtracker">none</url>
+  <url type="vcs-browser">none</url>
+  <url type="translate">none</url>
+  <url type="contact">none</url>
+
+  <developer id="net.armatik">
+    <name>DD</name>
+  </developer>
+
+  <content_rating type="oars-1.1">
+    <content_attribute id="violence-cartoon">moderate</content_attribute>
+    <content_attribute id="violence-fantasy">moderate</content_attribute>
+    <content_attribute id="violence-realistic">moderate</content_attribute>
+    <content_attribute id="violence-bloodshed">moderate</content_attribute>
+    <content_attribute id="sex-nudity">intense</content_attribute>
+    <content_attribute id="sex-themes">intense</content_attribute>
+    <content_attribute id="language-profanity">moderate</content_attribute>
+  </content_rating>
+
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <recommends>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </recommends>
+  <supports>
+    <internet>always</internet>
+  </supports>
+
+  <releases>
+    <release version="1.0.0" date="2026-06-01">
+      <description>
+        Initial version
+      </description>
+    </release>
+  </releases>
+</component>

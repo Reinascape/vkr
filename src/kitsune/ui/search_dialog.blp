@@ -1,0 +1,133 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+using Gtk 4.0;
+using Adw 1;
+
+template $KitsuneSearchDialog: Adw.Dialog {
+  content-width: 460;
+  content-height: 520;
+  title: _("Search");
+
+  child: Gtk.Box {
+    orientation: vertical;
+
+    // Fixed header bubble: search + cancel + tabs
+    Gtk.Box {
+      orientation: vertical;
+
+      // Search row: entry + cancel button
+      Gtk.Box {
+        spacing: 8;
+        margin-start: 12;
+        margin-end: 12;
+        margin-top: 10;
+
+        Gtk.SearchEntry search_entry {
+          placeholder-text: _("Search anime...");
+          hexpand: true;
+          search-changed => $on_search_changed();
+        }
+
+        Gtk.Button {
+          label: _("Cancel");
+          clicked => $on_cancel_clicked();
+
+          styles ["flat"]
+        }
+      }
+
+      // Category tabs (hidden when empty)
+      Gtk.Box tabs_box {
+        margin-start: 12;
+        margin-end: 12;
+        margin-top: 10;
+        margin-bottom: 10;
+        spacing: 6;
+      }
+
+      Gtk.Separator separator {}
+    }
+
+    // Scrollable content area
+    Gtk.Stack stack {
+      vexpand: true;
+      hhomogeneous: false;
+
+      Gtk.StackPage {
+        name: "empty";
+        child: Gtk.Box {
+          orientation: vertical;
+          halign: center;
+          valign: center;
+          vexpand: true;
+          spacing: 8;
+
+          Gtk.Image {
+            icon-name: "net.armatik.Kitsune.system-search-symbolic";
+            pixel-size: 48;
+            opacity: 0.4;
+          }
+
+          Gtk.Label empty_subtitle {
+            wrap: true;
+            justify: center;
+            max-width-chars: 40;
+            opacity: 0.5;
+
+            styles ["dim-label"]
+          }
+        };
+      }
+
+      Gtk.StackPage {
+        name: "results";
+        child: Gtk.ScrolledWindow scrolled {
+          hscrollbar-policy: never;
+          vexpand: true;
+
+          Gtk.ListBox listbox {
+            selection-mode: browse;
+            activate-on-single-click: true;
+            valign: start;
+            row-activated => $on_row_activated();
+
+            styles ["search-dialog-list"]
+          }
+        };
+      }
+
+      Gtk.StackPage {
+        name: "no-results";
+        child: Gtk.Box {
+          orientation: vertical;
+          halign: center;
+          valign: center;
+          vexpand: true;
+          spacing: 8;
+
+          Gtk.Image {
+            icon-name: "net.armatik.Kitsune.system-search-symbolic";
+            pixel-size: 48;
+            opacity: 0.4;
+          }
+
+          Gtk.Label {
+            label: _("No Results");
+            wrap: true;
+            justify: center;
+
+            styles ["title-3"]
+          }
+
+          Gtk.Label {
+            label: _("Try a different search query");
+            wrap: true;
+            justify: center;
+
+            styles ["dim-label"]
+          }
+        };
+      }
+    }
+  };
+}

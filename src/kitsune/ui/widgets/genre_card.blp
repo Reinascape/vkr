@@ -1,0 +1,82 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+using Gtk 4.0;
+using Adw 1;
+
+template $KitsuneGenreCard: Gtk.FlowBoxChild {
+  Gtk.Box {
+    orientation: vertical;
+    spacing: 6;
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    width-request: 180;
+
+    Adw.Clamp {
+      maximum-size: 180;
+      valign: start;
+
+      Gtk.Overlay {
+        width-request: 180;
+        height-request: 250;
+
+        Gtk.Picture picture {
+          width-request: 180;
+          height-request: 250;
+          content-fit: cover;
+
+          styles ["card"]
+        }
+
+        [overlay]
+        Gtk.Image placeholder {
+          icon-name: "net.armatik.Kitsune.image-missing-symbolic";
+          pixel-size: 48;
+          halign: center;
+          valign: center;
+          visible: false;
+
+          styles ["dim-label"]
+        }
+
+        [overlay]
+        Adw.Spinner spinner {
+          halign: center;
+          valign: center;
+        }
+      }
+    }
+
+    Adw.Clamp {
+      maximum-size: 180;
+      valign: start;
+
+      Gtk.Box {
+        orientation: vertical;
+        height-request: 60;
+
+        Gtk.Label title_label {
+          wrap: true;
+          max-width-chars: 14;
+          lines: 2;
+          ellipsize: end;
+          xalign: 0;
+          valign: start;
+
+          styles ["heading"]
+        }
+
+        Gtk.Label subtitle_label {
+          xalign: 0;
+          ellipsize: end;
+          max-width-chars: 18;
+          visible: false;
+          valign: start;
+
+          styles ["dim-label", "caption"]
+        }
+      }
+    }
+  }
+}

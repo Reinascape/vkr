@@ -1,0 +1,294 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+using Gtk 4.0;
+using Adw 1;
+
+template $KitsuneWindow: Adw.ApplicationWindow {
+  title: _("Kitsune");
+  default-width: 900;
+  default-height: 600;
+
+  content: Adw.ToastOverlay toast_overlay {
+    child: Gtk.Box {
+      orientation: vertical;
+
+    Adw.NavigationView nav_view {
+      vexpand: true;
+
+      Adw.NavigationPage {
+      title: _("Kitsune");
+      tag: "main";
+
+      child: Adw.OverlaySplitView filter_split {
+        sidebar-position: end;
+        show-sidebar: false;
+        collapsed: true;
+
+        content: Adw.MultiLayoutView multi {
+          [content]
+          Gtk.Stack content_stack {
+            transition-type: crossfade;
+          }
+
+          [filter]
+          Gtk.Button filter_btn {
+            icon-name: "net.armatik.Kitsune.funnel-symbolic";
+            tooltip-text: _("Filters");
+            clicked => $on_filter_clicked();
+          }
+
+          [refresh]
+          Gtk.Button refresh_btn {
+            icon-name: "net.armatik.Kitsune.update-symbolic";
+            tooltip-text: _("Refresh");
+            visible: false;
+            clicked => $on_refresh_clicked();
+          }
+
+          [mode]
+          Gtk.Button mode_btn {
+            icon-name: "net.armatik.Kitsune.view-list-symbolic";
+            tooltip-text: _("Toggle view");
+            visible: false;
+            clicked => $on_mode_toggled();
+
+            styles ["flat"]
+          }
+
+          [add-tag]
+          Gtk.Button add_tag_btn {
+            label: _("New Tag");
+            visible: false;
+            clicked => $on_add_tag_clicked();
+
+            styles ["suggested-action"]
+          }
+
+          [delete-tag]
+          Gtk.Button delete_tag_btn {
+            icon-name: "net.armatik.Kitsune.user-trash-symbolic";
+            tooltip-text: _("Delete Tag");
+            visible: false;
+            clicked => $on_delete_tag_clicked();
+
+            styles ["flat", "error"]
+          }
+
+          Adw.Layout {
+            name: "wide";
+
+            content: Adw.OverlaySplitView {
+              collapsed: false;
+
+              sidebar: Adw.ToolbarView {
+                [top]
+                Adw.HeaderBar {
+                  title-widget: Adw.WindowTitle sidebar_title { title: ""; };
+
+                  [start]
+                  Gtk.Button {
+                    icon-name: "net.armatik.Kitsune.system-search-symbolic";
+                    tooltip-text: _("Search");
+                    clicked => $on_search_clicked();
+                  }
+
+                  [end]
+                  Gtk.MenuButton {
+                    icon-name: "net.armatik.Kitsune.open-menu-symbolic";
+                    menu-model: primary_menu;
+                    tooltip-text: _("Main Menu");
+                    primary: true;
+                  }
+                }
+
+                content: Gtk.ListBox sidebar_list {
+                  selection-mode: single;
+                  row-selected => $on_sidebar_row_selected();
+
+                  styles ["navigation-sidebar"]
+                };
+
+                [bottom]
+                Gtk.ListBox auth_sidebar_list {
+                  selection-mode: single;
+                  row-selected => $on_sidebar_row_selected();
+
+                  styles ["navigation-sidebar"]
+                }
+              };
+
+              content: Adw.ToolbarView {
+                [top]
+                Adw.HeaderBar {
+                  title-widget: Adw.WindowTitle wide_content_title {
+                    title: _("Catalog");
+                  };
+
+                  [start]
+                  Gtk.Button back_btn {
+                    icon-name: "net.armatik.Kitsune.go-previous-symbolic";
+                    tooltip-text: _("Back");
+                    visible: false;
+                    clicked => $on_back_clicked();
+                  }
+
+                  [end]
+                  Adw.LayoutSlot {
+                    id: "delete-tag";
+                  }
+
+                  [end]
+                  Adw.LayoutSlot {
+                    id: "add-tag";
+                  }
+
+                  [end]
+                  Adw.LayoutSlot {
+                    id: "mode";
+                  }
+
+                  [end]
+                  Adw.LayoutSlot {
+                    id: "filter";
+                  }
+
+                  [end]
+                  Adw.LayoutSlot {
+                    id: "refresh";
+                  }
+                }
+
+                content: Adw.LayoutSlot {
+                  id: "content";
+                };
+              };
+            };
+          }
+
+          Adw.Layout {
+            name: "narrow";
+
+            content: Adw.BottomSheet narrow_sheet {
+              show-drag-handle: false;
+
+              content: Adw.ToolbarView narrow_toolbar {
+                [top]
+                Adw.HeaderBar narrow_header {
+                  title-widget: Adw.WindowTitle { title: ""; };
+
+                  styles ["kitsune-narrow-header"]
+
+                  [start]
+                  Gtk.Button narrow_back_btn {
+                    icon-name: "net.armatik.Kitsune.go-previous-symbolic";
+                    tooltip-text: _("Back");
+                    visible: false;
+                    clicked => $on_back_clicked();
+                  }
+
+                  [start]
+                  Gtk.Button {
+                    icon-name: "net.armatik.Kitsune.system-search-symbolic";
+                    tooltip-text: _("Search");
+                    clicked => $on_search_clicked();
+                  }
+
+                  [end]
+                  Adw.LayoutSlot {
+                    id: "delete-tag";
+                  }
+
+                  [end]
+                  Adw.LayoutSlot {
+                    id: "add-tag";
+                  }
+
+                  [end]
+                  Adw.LayoutSlot {
+                    id: "mode";
+                  }
+
+                  [end]
+                  Adw.LayoutSlot {
+                    id: "filter";
+                  }
+                }
+
+                content: Adw.LayoutSlot {
+                  id: "content";
+                };
+              };
+
+              bottom-bar: Gtk.Box narrow_bottom_bar {
+                orientation: vertical;
+
+                Gtk.Separator {}
+
+                Gtk.Box narrow_drag_handle {
+                  halign: center;
+                  margin-top: 6;
+                  margin-bottom: 2;
+                  visible: false;
+
+                  Gtk.Box {
+                    width-request: 32;
+                    height-request: 4;
+                    valign: center;
+
+                    styles ["drag-handle-pill"]
+                  }
+                }
+
+                Gtk.Box narrow_tabs_box {
+                  homogeneous: true;
+                  margin-top: 4;
+                  margin-bottom: 4;
+                  margin-start: 8;
+                  margin-end: 8;
+                }
+              };
+
+              sheet: Gtk.Box narrow_sheet_box {
+                orientation: vertical;
+              };
+            };
+          }
+        };
+
+        // sidebar set programmatically
+      };
+    }
+    }
+
+    Adw.Banner session_expired_banner {
+      title: _("Your session has expired. Log in again to resume sync.");
+      button-label: _("Log in again");
+      revealed: false;
+      button-clicked => $on_session_banner_login();
+    }
+
+    Adw.Banner offline_banner {
+      title: _("No internet connection. App is working in limited mode.");
+      button-label: _("Retry");
+      revealed: false;
+      button-clicked => $on_retry();
+    }
+    };
+  };
+
+  Adw.Breakpoint {
+    condition ("max-width: 650sp")
+
+    setters {
+      multi.layout-name: "narrow";
+    }
+
+    apply => $on_narrow_apply();
+    unapply => $on_narrow_unapply();
+  }
+}
+
+menu primary_menu {
+  item (_("Preferences"), "win.preferences")
+  item (_("About Kitsune"), "app.about")
+}

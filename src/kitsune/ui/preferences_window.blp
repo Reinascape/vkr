@@ -1,0 +1,273 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+using Gtk 4.0;
+using Adw 1;
+
+template $KitsunePreferencesWindow: Adw.PreferencesDialog {
+  Adw.PreferencesPage {
+    title: _("Appearance");
+    icon-name: "net.armatik.Kitsune.applications-graphics-symbolic";
+
+    Adw.PreferencesGroup {
+      title: _("Release Page Style");
+
+      Gtk.Box {
+        orientation: vertical;
+        spacing: 12;
+
+        Adw.ToggleGroup style_toggle {
+          homogeneous: true;
+
+          notify::active-name => $on_style_changed();
+
+          Adw.Toggle {
+            name: "classic";
+            label: _("Classic");
+          }
+
+          Adw.Toggle {
+            name: "accent";
+            label: _("Accent Colors");
+          }
+        }
+
+        Gtk.Label style_description {
+          xalign: 0;
+          wrap: true;
+
+          styles ["dim-label"]
+        }
+      }
+    }
+
+    Adw.PreferencesGroup accent_group {
+      title: _("Accent Colors Settings");
+
+      Adw.SwitchRow mobile_enabled_row {
+        title: _("Mobile Mode");
+        subtitle: _("Enable accent gradient in narrow layout (experimental)");
+      }
+
+      Adw.SwitchRow glass_effect_row {
+        title: _("Glass Effect");
+        subtitle: _("Frosted glass noise overlay (may reduce performance)");
+      }
+
+      Adw.SpinRow color_points_row {
+        title: _("Color Points");
+        subtitle: _("Number of gradient color spots");
+
+        adjustment: Gtk.Adjustment {
+          lower: 2;
+          upper: 6;
+          step-increment: 1;
+          page-increment: 1;
+          value: 4;
+        };
+      }
+
+      Adw.SpinRow fade_duration_row {
+        title: _("Fade Duration");
+        subtitle: _("Animation duration in milliseconds");
+
+        adjustment: Gtk.Adjustment {
+          lower: 100;
+          upper: 3000;
+          step-increment: 100;
+          page-increment: 500;
+          value: 2000;
+        };
+      }
+    }
+
+    Adw.PreferencesGroup {
+      title: _("Episodes");
+
+      Adw.SwitchRow blur_unwatched_row {
+        title: _("Blur Unwatched");
+        subtitle: _("Blur episode preview images until watched");
+      }
+    }
+
+    Adw.PreferencesGroup {
+      title: _("Player");
+
+      Adw.SwitchRow close_button_row {
+        title: _("Close Button");
+        subtitle: _("Show window close button in player top bar");
+      }
+
+      Adw.SwitchRow rotate_button_row {
+        title: _("Rotate Button");
+        subtitle: _("Always show screen rotation button in player");
+        visible: false;
+      }
+    }
+  }
+
+  Adw.PreferencesPage {
+    title: _("Navigation");
+    icon-name: "net.armatik.Kitsune.view-grid-symbolic";
+
+    Adw.PreferencesGroup {
+      title: _("General");
+
+      Adw.SwitchRow navbar_sync_row {
+        title: _("Sync mobile with desktop");
+        subtitle: _("Mobile navigation uses the same tab order as desktop");
+      }
+
+      Adw.ComboRow navbar_sheet_style_row {
+        title: _("Expanded menu style");
+        subtitle: _("How to display tabs in the bottom sheet");
+
+        model: Gtk.StringList {
+          strings [_("Grid"), _("List")]
+        };
+      }
+    }
+
+    Adw.PreferencesGroup navbar_desktop_group {
+      title: _("Desktop Tabs");
+      description: _("Visible tabs and their order in the sidebar");
+
+      Gtk.ListBox navbar_desktop_list {
+        selection-mode: none;
+
+        styles ["boxed-list"]
+      }
+    }
+
+    Adw.PreferencesGroup navbar_mobile_group {
+      title: _("Mobile Tabs");
+      description: _("Visible tabs and their order in the bottom bar");
+
+      Gtk.ListBox navbar_mobile_list {
+        selection-mode: none;
+
+        styles ["boxed-list"]
+      }
+    }
+
+    Adw.PreferencesGroup search_categories_group {
+      title: _("Search Categories");
+      description: _("Order of categories in search results");
+
+      Gtk.ListBox search_categories_list {
+        selection-mode: none;
+
+        styles ["boxed-list"]
+      }
+    }
+  }
+
+  Adw.PreferencesPage {
+    title: _("Collections");
+    icon-name: "net.armatik.Kitsune.view-list-bullet-symbolic";
+
+    Adw.PreferencesGroup {
+      title: _("Automatic management");
+      description: _("Automatically move releases between built-in collections (Watching, Watched, Paused, Abandoned) based on what you watch");
+
+      Adw.SwitchRow auto_watch_events_row {
+        title: _("From watch activity");
+        subtitle: _("Add to Watching when you start an episode; move to Watched when all episodes are watched; suggest moving back to Watching when you resume from Planned, Paused or Abandoned");
+      }
+
+      Adw.SwitchRow auto_idle_scan_row {
+        title: _("Idle timer");
+        subtitle: _("Once per day, move to Paused after 30 days without progress and to Abandoned after 180 days");
+      }
+    }
+
+    Adw.PreferencesGroup {
+      title: _("Adult content");
+      description: _("How 18+ titles are presented in lists and previews");
+
+      Adw.SwitchRow adult_warning_row {
+        title: _("Show 18+ confirmation");
+        subtitle: _("Blur posters and ask before opening a title marked 18+");
+      }
+    }
+  }
+
+  Adw.PreferencesPage {
+    title: _("Storage");
+    icon-name: "net.armatik.Kitsune.drive-harddisk-symbolic";
+
+    Adw.PreferencesGroup {
+      title: _("Cache");
+      description: _("Re-downloadable data from the network");
+
+      Adw.ActionRow cache_size_row {
+        title: _("Posters");
+
+        [suffix]
+        Gtk.Button clear_btn {
+          label: _("Clear");
+          valign: center;
+          clicked => $on_clear_clicked();
+
+          styles ["destructive-action"]
+        }
+      }
+
+      Adw.ActionRow preview_size_row {
+        title: _("Episode Previews");
+
+        [suffix]
+        Gtk.Button clear_preview_btn {
+          label: _("Clear");
+          valign: center;
+          clicked => $on_clear_preview_clicked();
+
+          styles ["destructive-action"]
+        }
+      }
+
+      Adw.ActionRow release_size_row {
+        title: _("Releases");
+
+        [suffix]
+        Gtk.Button clear_release_btn {
+          label: _("Clear");
+          valign: center;
+          clicked => $on_clear_release_clicked();
+
+          styles ["destructive-action"]
+        }
+      }
+    }
+
+    Adw.PreferencesGroup {
+      title: _("User Data");
+      description: _("Personal data that cannot be restored from the network");
+
+      Adw.ActionRow watch_size_row {
+        title: _("Watch Progress");
+
+        [suffix]
+        Gtk.Button clear_progress_btn {
+          label: _("Clear");
+          valign: center;
+          clicked => $on_clear_progress_clicked();
+
+          styles ["destructive-action"]
+        }
+      }
+
+      Adw.ActionRow tags_size_row {
+        title: _("Tags and Favorites");
+
+        [suffix]
+        Gtk.Button clear_tags_btn {
+          label: _("Clear");
+          valign: center;
+          clicked => $on_clear_tags_clicked();
+
+          styles ["destructive-action"]
+        }
+      }
+    }
+  }
+}

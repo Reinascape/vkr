@@ -1,0 +1,290 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+using Gtk 4.0;
+using Adw 1;
+
+template $KitsuneReleaseView: Adw.NavigationPage {
+  child: Gtk.Overlay {
+    Gtk.Picture gradient_bg {
+      content-fit: cover;
+      opacity: 0;
+    }
+
+    [overlay]
+    Adw.ToolbarView toolbar {
+      hexpand: true;
+      vexpand: true;
+
+      [top]
+      Adw.HeaderBar header_bar {
+        show-title: false;
+
+        [start]
+        Gtk.Button home_btn {
+          icon-name: "net.armatik.Kitsune.home-symbolic";
+          tooltip-text: _("Home");
+          clicked => $on_home_clicked();
+        }
+
+        [end]
+        Adw.SplitButton tag_split_btn {
+          icon-name: "net.armatik.Kitsune.non-starred-symbolic";
+          tooltip-text: _("Add to favorites");
+          clicked => $on_favorite_clicked();
+        }
+      }
+
+      content: Adw.BreakpointBin {
+        width-request: 300;
+        height-request: 400;
+        vexpand: true;
+
+        Gtk.ScrolledWindow scrolled {
+          vexpand: true;
+          hscrollbar-policy: never;
+
+          Gtk.Box {
+            orientation: vertical;
+            width-request: 0;
+
+            Gtk.Overlay hero {
+              overflow: hidden;
+              margin-start: 24;
+              margin-end: 24;
+              margin-top: 24;
+
+              Gtk.Box header {
+                spacing: 24;
+
+                Gtk.Picture poster {
+                  width-request: 250;
+                  height-request: 350;
+                  content-fit: cover;
+                  valign: start;
+
+                  styles ["card"]
+                }
+
+                Gtk.Box info_box {
+                  orientation: vertical;
+                  spacing: 8;
+                  valign: end;
+                  hexpand: true;
+                }
+              }
+
+              [overlay]
+              Gtk.Overlay bg_wrapper {
+                opacity: 0;
+                can-target: false;
+
+                Gtk.Picture bg_poster {
+                  content-fit: cover;
+                }
+
+                [overlay]
+                Gtk.Box {
+                  styles ["poster-fade"]
+                }
+              }
+            }
+
+            Gtk.Box content_area {
+              orientation: vertical;
+              spacing: 12;
+              margin-top: 12;
+              margin-bottom: 12;
+
+              Gtk.Label description_label {
+                wrap: true;
+                xalign: 0;
+                visible: false;
+                margin-start: 24;
+                margin-end: 24;
+              }
+
+              Adw.Spinner loading_spinner {
+                halign: center;
+                valign: center;
+                width-request: 48;
+                height-request: 48;
+              }
+
+              Gtk.ScrolledWindow tabs_scroll {
+                hscrollbar-policy: external;
+                vscrollbar-policy: never;
+                hexpand: true;
+                visible: false;
+                margin-start: 24;
+                margin-end: 24;
+
+                Gtk.Box tabs_header {
+                  halign: center;
+                  hexpand: true;
+                }
+              }
+
+              Gtk.Stack tabs_stack {
+                hhomogeneous: false;
+                vhomogeneous: false;
+                transition-type: crossfade;
+                hexpand: true;
+                visible: false;
+
+                Gtk.Box episodes_page {
+                  orientation: vertical;
+                  spacing: 12;
+                  hexpand: true;
+                  margin-start: 24;
+                  margin-end: 24;
+
+                  Gtk.Box episodes_toolbar {
+                    spacing: 12;
+
+                    Gtk.SearchEntry episodes_search {
+                      placeholder-text: _("Enter name or number…");
+                      hexpand: true;
+                    }
+
+                    Gtk.Box episodes_controls {}
+                  }
+
+                  Adw.Spinner episodes_spinner {
+                    halign: center;
+                    visible: false;
+                  }
+
+                  Gtk.Label episodes_empty {
+                    label: _("Nothing here yet");
+                    visible: false;
+                    margin-top: 24;
+                    margin-bottom: 24;
+
+                    styles ["dim-label", "title-3"]
+                  }
+
+                  Gtk.ListBox episodes_list {
+                    selection-mode: none;
+
+                    styles ["boxed-list"]
+                  }
+
+                  Gtk.FlowBox episodes_grid {
+                    visible: false;
+                    selection-mode: none;
+                    homogeneous: true;
+                    min-children-per-line: 2;
+                    max-children-per-line: 8;
+                    column-spacing: 12;
+                    row-spacing: 12;
+
+                    styles ["episodes-grid"]
+                  }
+                }
+
+                Gtk.Box related_page {
+                  orientation: vertical;
+                  spacing: 12;
+                  hexpand: true;
+                  margin-start: 24;
+                  margin-end: 24;
+
+                  Adw.Spinner related_spinner {
+                    halign: center;
+                    visible: false;
+                  }
+
+                  Gtk.Label related_empty {
+                    label: _("No related releases");
+                    visible: false;
+
+                    styles ["dim-label"]
+                  }
+
+                  Gtk.Box related_header {
+                    orientation: vertical;
+                    spacing: 4;
+                    visible: false;
+
+                    styles ["card"]
+                  }
+
+                  Gtk.ListBox related_list {
+                    selection-mode: none;
+                    visible: false;
+
+                    styles ["boxed-list"]
+                  }
+                }
+
+                Gtk.Box team_page {
+                  orientation: vertical;
+                  spacing: 12;
+                  hexpand: true;
+                  margin-start: 24;
+                  margin-end: 24;
+
+                  Gtk.Label team_empty {
+                    label: _("No team information");
+                    visible: false;
+
+                    styles ["dim-label"]
+                  }
+
+                  Gtk.ListBox team_list {
+                    selection-mode: none;
+
+                    styles ["boxed-list"]
+                  }
+                }
+
+                Gtk.Box torrents_page {
+                  orientation: vertical;
+                  spacing: 12;
+                  hexpand: true;
+                  margin-start: 24;
+                  margin-end: 24;
+
+                  Gtk.Label torrents_empty {
+                    label: _("No torrents available");
+                    visible: false;
+
+                    styles ["dim-label"]
+                  }
+
+                  Gtk.ListBox torrents_list {
+                    selection-mode: none;
+
+                    styles ["boxed-list"]
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        Adw.Breakpoint {
+          condition ("max-width: 550px")
+
+          setters {
+            bg_wrapper.opacity: 0.15;
+            poster.visible: false;
+            hero.margin-start: 0;
+            hero.margin-end: 0;
+            hero.margin-top: 0;
+            header.margin-start: 24;
+            header.margin-end: 24;
+            header.margin-top: 128;
+            header.margin-bottom: 24;
+            episodes_grid.min-children-per-line: 1;
+            episodes_grid.max-children-per-line: 1;
+            episodes_toolbar.orientation: vertical;
+          }
+
+          apply => $on_bp_apply();
+          unapply => $on_bp_unapply();
+        }
+      };
+    }
+  };
+}

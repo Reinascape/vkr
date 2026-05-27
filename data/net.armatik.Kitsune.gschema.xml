@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="kitsune">
+  <schema id="net.armatik.Kitsune" path="/net/armatik/Kitsune/">
+    <key name="preferred-quality" type="s">
+      <default>'1080'</default>
+      <summary>Preferred video quality</summary>
+      <description>Preferred HLS stream quality: 1080, 720, or 480</description>
+      <choices>
+        <choice value='1080'/><choice value='720'/><choice value='480'/>
+      </choices>
+    </key>
+    <key name="volume" type="d">
+      <default>1.0</default>
+      <summary>Player volume</summary>
+      <description>Player volume level (0.0 to 1.0)</description>
+      <range min="0.0" max="1.0"/>
+    </key>
+    <key name="release-page-style" type="s">
+      <default>'classic'</default>
+      <summary>Release page style</summary>
+      <description>Visual style for the release page: classic or accent</description>
+      <choices>
+        <choice value='classic'/><choice value='accent'/>
+      </choices>
+    </key>
+    <key name="accent-fade-duration" type="i">
+      <default>2000</default>
+      <summary>Accent fade-in duration</summary>
+      <description>Duration of accent gradient fade-in animation in milliseconds (100–3000)</description>
+      <range min="100" max="3000"/>
+    </key>
+    <key name="accent-mobile-enabled" type="b">
+      <default>false</default>
+      <summary>Enable accent in mobile mode</summary>
+      <description>Show accent gradient in narrow/mobile layout (experimental)</description>
+    </key>
+    <key name="accent-glass-effect" type="b">
+      <default>false</default>
+      <summary>Glass effect</summary>
+      <description>Overlay subtle noise on the accent gradient for a frosted glass look</description>
+    </key>
+    <key name="accent-color-points" type="i">
+      <default>4</default>
+      <summary>Accent color points</summary>
+      <description>Number of color gradient points (2–6)</description>
+      <range min="2" max="6"/>
+    </key>
+    <key name="player-show-close-button" type="b">
+      <default>false</default>
+      <summary>Show close button in player</summary>
+      <description>Show close window button in the video player top bar</description>
+    </key>
+    <key name="player-show-rotate-button" type="b">
+      <default>false</default>
+      <summary>Always show rotate button in player</summary>
+      <description>Show the screen rotation button in the video player regardless of device type</description>
+    </key>
+    <key name="episodes-view" type="s">
+      <default>'list'</default>
+      <summary>Episodes view mode</summary>
+      <description>How to display episodes: list or grid</description>
+      <choices>
+        <choice value='list'/><choice value='grid'/>
+      </choices>
+    </key>
+    <key name="blur-unwatched-episodes" type="b">
+      <default>true</default>
+      <summary>Blur unwatched episode previews</summary>
+      <description>Apply blur effect to episode preview images that have not been watched yet</description>
+    </key>
+    <key name="tags-view-mode" type="s">
+      <default>'cards'</default>
+      <summary>Tags view mode</summary>
+      <description>Display mode for tags tab: cards or list</description>
+      <choices>
+        <choice value='cards'/><choice value='list'/>
+      </choices>
+    </key>
+    <key name="navbar-desktop" type="s">
+      <default>'["catalog","genres","franchises","tags"]'</default>
+      <summary>Desktop navigation tabs</summary>
+      <description>JSON array of tab IDs defining order and visibility in wide layout</description>
+    </key>
+    <key name="navbar-mobile" type="s">
+      <default>'["catalog","genres","franchises","tags"]'</default>
+      <summary>Mobile navigation tabs</summary>
+      <description>JSON array of tab IDs defining order and visibility in narrow layout</description>
+    </key>
+    <key name="navbar-sheet-style" type="s">
+      <default>'grid'</default>
+      <summary>Bottom sheet style</summary>
+      <description>Display style for the navigation bottom sheet: grid (icons) or list (rows)</description>
+      <choices>
+        <choice value='grid'/><choice value='list'/>
+      </choices>
+    </key>
+    <key name="navbar-sync" type="b">
+      <default>true</default>
+      <summary>Sync mobile navigation with desktop</summary>
+      <description>When true, mobile navigation uses the desktop tab order</description>
+    </key>
+    <key name="search-category-order" type="s">
+      <default>'["anime","genres","franchises","tags"]'</default>
+      <summary>Search category order</summary>
+      <description>JSON array of category IDs defining display order in search results</description>
+    </key>
+    <key name="window-width" type="i">
+      <default>900</default>
+      <summary>Window width</summary>
+    </key>
+    <key name="window-height" type="i">
+      <default>600</default>
+      <summary>Window height</summary>
+    </key>
+    <key name="auto-collections-watch-events" type="b">
+      <default>true</default>
+      <summary>Auto-manage collections from watch events</summary>
+      <description>Automatically add to "Watching" on first episode and to "Watched" when all episodes are completed; suggest moving back to "Watching" from Planned/Paused/Abandoned when watching resumes</description>
+    </key>
+    <key name="auto-collections-idle-scan" type="b">
+      <default>true</default>
+      <summary>Auto-move idle releases</summary>
+      <description>Once per day, move releases with no progress for 30+ days to "Paused" and 180+ days to "Abandoned"</description>
+    </key>
+    <key name="adult-warning-disabled" type="b">
+      <default>false</default>
+      <summary>Disable 18+ content warning</summary>
+      <description>When true, posters for 18+ titles are shown without blur and the confirmation dialog is skipped when opening 18+ title pages</description>
+    </key>
+    <key name="last-user-id" type="i">
+      <default>0</default>
+      <summary>Last authenticated user id</summary>
+      <description>Owning user id of the local synced cache (favorites, collections, watch positions, pending sync queue). Used to route pending operations to the right account, and to identify the previous user during cross-account re-login cleanup when the cached session has expired and the in-memory user is gone. 0 means no known user.</description>
+    </key>
+  </schema>
+</schemalist>

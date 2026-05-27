@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Kitsune
+Comment=Watch anime from AniLiberty
+Exec=kitsune
+Icon=net.armatik.Kitsune
+Terminal=false
+Type=Application
+Categories=AudioVideo;Video;Player;GTK;
+Keywords=anime;video;aniliberty;
+StartupNotify=true
+X-GNOME-UsesNotifications=false
+X-Purism-FormFactor=Workstation;Mobile;

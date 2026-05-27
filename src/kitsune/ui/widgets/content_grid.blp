@@ -1,0 +1,108 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+using Gtk 4.0;
+using Adw 1;
+
+template $KitsuneContentGrid: Gtk.Box {
+  orientation: vertical;
+
+  Gtk.Overlay {
+    vexpand: true;
+
+    Gtk.ScrolledWindow scrolled {
+      vexpand: true;
+      hscrollbar-policy: never;
+
+      Adw.Clamp {
+        maximum-size: 1600;
+        tightening-threshold: 1000;
+
+        Gtk.Box content_box {
+          orientation: vertical;
+
+          Gtk.Revealer pull_refresh_revealer {
+            transition-type: slide_down;
+            transition-duration: 250;
+            reveal-child: false;
+
+            child: Gtk.Box {
+              orientation: vertical;
+              hexpand: true;
+
+              styles ["pull-refresh-bg"]
+
+              Adw.Spinner {
+                halign: center;
+                width-request: 32;
+                height-request: 32;
+                margin-top: 16;
+                margin-bottom: 16;
+              }
+            };
+          }
+
+          Gtk.FlowBox flowbox {
+            homogeneous: true;
+            min-children-per-line: 2;
+            max-children-per-line: 6;
+            column-spacing: 12;
+            row-spacing: 12;
+            margin-start: 12;
+            margin-end: 12;
+            margin-top: 12;
+            margin-bottom: 12;
+            selection-mode: none;
+            activate-on-single-click: true;
+            child-activated => $on_activated();
+          }
+
+          Adw.Spinner spinner {
+            halign: center;
+            width-request: 48;
+            height-request: 48;
+            margin-top: 24;
+            margin-bottom: 24;
+            visible: false;
+          }
+
+          Gtk.Label end_label {
+            label: _("That\'s all!");
+            visible: false;
+            margin-top: 24;
+            margin-bottom: 24;
+
+            styles ["dim-label", "title-3"]
+          }
+        }
+      }
+    }
+
+    [overlay]
+    Adw.Spinner initial_spinner {
+      halign: center;
+      valign: center;
+      width-request: 48;
+      height-request: 48;
+      visible: false;
+    }
+
+    [overlay]
+    Gtk.Revealer scroll_up_revealer {
+      transition-type: crossfade;
+      transition-duration: 300;
+      reveal-child: false;
+      halign: end;
+      valign: end;
+      margin-end: 18;
+      margin-bottom: 18;
+
+      Gtk.Button {
+        icon-name: "net.armatik.Kitsune.go-up-symbolic";
+        tooltip-text: _("Scroll to top");
+        clicked => $on_scroll_up();
+
+        styles ["circular", "osd"]
+      }
+    }
+  }
+}

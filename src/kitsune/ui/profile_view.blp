@@ -1,0 +1,218 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+using Gtk 4.0;
+using Adw 1;
+
+template $KitsuneProfileView: Gtk.Box {
+  orientation: vertical;
+
+  Gtk.ScrolledWindow {
+    hscrollbar-policy: never;
+    vexpand: true;
+
+    child: Adw.Clamp clamp {
+      maximum-size: 520;
+      margin-start: 16;
+      margin-end: 16;
+      margin-top: 20;
+      margin-bottom: 20;
+
+      child: Gtk.Box card_box {
+        orientation: vertical;
+
+        styles ["profile-card"]
+
+        // Two layers: hero = child (behind), content = overlay (on top)
+        Gtk.Overlay profile_overlay {
+
+          // Child (drawn first = behind): hero image + gradient
+          Gtk.Box hero_box {
+            orientation: vertical;
+            valign: start;
+
+            Gtk.Overlay {
+              Gtk.Picture hero_picture {
+                height-request: 520;
+                content-fit: cover;
+                opacity: 0;
+
+                styles ["profile-hero-image"]
+              }
+
+              [overlay]
+              Gtk.Box {
+                orientation: vertical;
+                hexpand: true;
+                vexpand: true;
+
+                styles ["profile-hero-gradient"]
+              }
+            }
+          }
+
+          // Overlay (drawn on top): all content. Side margins live here
+          // so every inner block shares the same left/right bounds; do
+          // not set margin-start/end on children.
+          [overlay]
+          Gtk.Box content_box {
+            orientation: vertical;
+            margin-top: 16;
+            margin-start: 16;
+            margin-end: 16;
+
+            // Avatar + name
+            Gtk.Box {
+              orientation: vertical;
+              halign: center;
+              spacing: 4;
+
+              Adw.Avatar avatar {
+                size: 80;
+                halign: center;
+              }
+
+              Gtk.Label nickname_label {
+                halign: center;
+                margin-top: 8;
+                ellipsize: end;
+                max-width-chars: 16;
+
+                styles ["title-1"]
+              }
+
+              Gtk.Label email_label {
+                halign: center;
+                ellipsize: end;
+                max-width-chars: 24;
+
+                styles ["dim-label"]
+              }
+
+              Gtk.Label member_since_label {
+                halign: center;
+                wrap: true;
+                max-width-chars: 24;
+                justify: center;
+
+                styles ["dim-label", "caption"]
+              }
+            }
+
+            // Sync
+            Gtk.Box {
+              orientation: vertical;
+              spacing: 4;
+              halign: center;
+              margin-top: 4;
+              margin-bottom: 14;
+
+              Gtk.Box {
+                halign: center;
+                spacing: 6;
+
+                Gtk.Label sync_time_label {
+                  styles ["dim-label", "caption"]
+                }
+
+                Gtk.Button sync_button {
+                  icon-name: "net.armatik.Kitsune.update-symbolic";
+                  tooltip-text: _("Sync now");
+                  clicked => $on_sync_clicked();
+
+                  styles ["flat", "circular"]
+                }
+              }
+
+              Gtk.Box pending_row {
+                halign: center;
+                spacing: 6;
+                visible: false;
+
+                Gtk.Label {
+                  label: "●";
+
+                  styles ["warning"]
+                }
+
+                Gtk.Label pending_label {
+                  styles ["caption"]
+                }
+              }
+
+              Gtk.Box error_row {
+                halign: center;
+                spacing: 6;
+                visible: false;
+
+                Gtk.Label {
+                  label: _("Last error:");
+
+                  styles ["dim-label", "caption"]
+                }
+
+                Gtk.Label error_text_label {
+                  max-width-chars: 24;
+                  ellipsize: end;
+
+                  styles ["caption"]
+                }
+              }
+
+              Gtk.Button retry_button {
+                label: _("Retry now");
+                halign: center;
+                visible: false;
+                clicked => $on_retry_clicked();
+
+                styles ["flat"]
+              }
+            }
+
+            // Collection cards — FlowBox reflows 3 → 2 per line on narrow
+            Gtk.FlowBox collections_flow {
+              homogeneous: true;
+              min-children-per-line: 2;
+              max-children-per-line: 3;
+              selection-mode: none;
+              row-spacing: 8;
+              column-spacing: 8;
+              hexpand: true;
+              margin-bottom: 8;
+            }
+
+            // Total stats
+            Gtk.Box totals_box {
+              spacing: 8;
+              margin-bottom: 16;
+              homogeneous: true;
+            }
+
+            // Actions — settings icon pill + logout pill on one row
+            Gtk.Box {
+              orientation: horizontal;
+              spacing: 8;
+              halign: fill;
+              margin-bottom: 20;
+
+              Gtk.Button settings_button {
+                icon-name: "net.armatik.Kitsune.settings-symbolic";
+                tooltip-text: _("Account settings");
+                clicked => $on_settings_site_clicked();
+
+                styles ["pill", "profile-settings-pill"]
+              }
+
+              Gtk.Button logout_button {
+                label: _("Log out");
+                hexpand: true;
+                clicked => $on_logout_clicked();
+
+                styles ["destructive-action", "pill"]
+              }
+            }
+          }
+        }
+      };
+    };
+  }
+}

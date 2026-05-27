@@ -1,0 +1,101 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+using Gtk 4.0;
+
+template $KitsuneFilterPanel: Gtk.Box {
+  orientation: vertical;
+  width-request: 340;
+
+  Gtk.Box {
+    halign: end;
+    margin-end: 8;
+    margin-top: 8;
+    margin-bottom: 4;
+
+    Gtk.Button close_btn {
+      icon-name: "net.armatik.Kitsune.sidebar-collapse-right-symbolic";
+      tooltip-text: _("Close");
+      clicked => $on_close_clicked();
+
+      styles ["flat"]
+    }
+  }
+
+  Gtk.ScrolledWindow {
+    vexpand: true;
+    hscrollbar-policy: never;
+
+    Gtk.Box content_box {
+      orientation: vertical;
+      spacing: 10;
+      margin-start: 16;
+      margin-end: 16;
+      margin-top: 6;
+      margin-bottom: 16;
+
+      Gtk.Box {
+        spacing: 8;
+
+        Gtk.Label {
+          label: _("Sorting");
+          xalign: 0;
+          hexpand: true;
+
+          styles ["heading"]
+        }
+
+        Gtk.MenuButton sorting_btn {
+          halign: end;
+
+          styles ["flat"]
+        }
+      }
+
+      Gtk.Label {
+        label: _("Release period");
+        xalign: 0;
+        margin-top: 2;
+
+        styles ["heading"]
+      }
+
+      Gtk.Box {
+        spacing: 8;
+
+        Gtk.Label {
+          label: _("from");
+        }
+
+        Gtk.SpinButton year_from {
+          hexpand: true;
+          value-changed => $on_year_changed();
+        }
+
+        Gtk.Label {
+          label: _("to");
+        }
+
+        Gtk.SpinButton year_to {
+          hexpand: true;
+          value-changed => $on_year_changed();
+        }
+      }
+    }
+  }
+
+  Gtk.Box {
+    margin-start: 16;
+    margin-end: 16;
+    margin-top: 10;
+    margin-bottom: 12;
+
+    Gtk.Button reset_btn {
+      label: _("Reset");
+      hexpand: true;
+      sensitive: false;
+      clicked => $on_reset();
+
+      styles ["destructive-action"]
+    }
+  }
+}

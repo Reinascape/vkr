@@ -1,0 +1,266 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+using Gtk 4.0;
+using Adw 1;
+
+template $KitsunePlayerView: Adw.NavigationPage {
+  child: Gtk.Overlay main_overlay {
+    styles ["player-bg"]
+
+    Gtk.Picture picture {
+      content-fit: contain;
+      hexpand: true;
+      vexpand: true;
+    }
+
+    [overlay]
+    Gtk.Overlay controls_box {
+      hexpand: true;
+      vexpand: true;
+
+      styles ["player-shade"]
+
+      Gtk.Box {
+        hexpand: true;
+        vexpand: true;
+      }
+
+      // Top bar
+      [overlay]
+      Gtk.WindowHandle {
+        valign: start;
+
+        Gtk.Box top_bar {
+          margin-start: 12;
+          margin-end: 12;
+          margin-top: 12;
+          spacing: 8;
+
+          Gtk.Button {
+            icon-name: "net.armatik.Kitsune.go-previous-symbolic";
+            focusable: false;
+            tooltip-text: _("Back");
+            clicked => $on_back();
+
+            styles ["circular", "osd"]
+          }
+
+          Gtk.Box {
+            hexpand: true;
+          }
+
+          Gtk.Button fullscreen_btn {
+            icon-name: "net.armatik.Kitsune.view-fullscreen-symbolic";
+            focusable: false;
+            tooltip-text: _("Fullscreen");
+            clicked => $on_fullscreen();
+
+            styles ["circular", "osd"]
+          }
+
+          Gtk.Button close_btn {
+            icon-name: "net.armatik.Kitsune.window-close-symbolic";
+            focusable: false;
+            visible: false;
+            tooltip-text: _("Close");
+            clicked => $on_close();
+
+            styles ["circular", "osd"]
+          }
+        }
+      }
+
+      // Center controls — centered relative to entire window
+      [overlay]
+      Gtk.Box center_controls {
+        halign: center;
+        valign: center;
+        spacing: 24;
+
+        Gtk.Button {
+          icon-name: "net.armatik.Kitsune.seek-backward-10-symbolic";
+          focusable: false;
+          valign: center;
+          tooltip-text: _("Rewind 10 seconds");
+          clicked => $on_rewind();
+
+          styles ["flat", "player-center-btn"]
+        }
+
+        Gtk.Button play_btn {
+          icon-name: "net.armatik.Kitsune.media-playback-start-symbolic";
+          focusable: false;
+          valign: center;
+          tooltip-text: _("Play / Pause");
+          clicked => $on_play_pause();
+
+          styles ["flat", "player-play-btn"]
+        }
+
+        Gtk.Button {
+          icon-name: "net.armatik.Kitsune.seek-forward-10-symbolic";
+          focusable: false;
+          valign: center;
+          tooltip-text: _("Forward 10 seconds");
+          clicked => $on_forward();
+
+          styles ["flat", "player-center-btn"]
+        }
+      }
+
+      // Episode navigation
+      [overlay]
+      Gtk.Button prev_btn {
+        icon-name: "net.armatik.Kitsune.media-skip-backward-symbolic";
+        focusable: false;
+        halign: start;
+        valign: center;
+        margin-start: 24;
+        tooltip-text: _("Previous episode");
+        clicked => $on_prev_episode();
+
+        styles ["flat", "player-center-btn"]
+      }
+
+      [overlay]
+      Gtk.Button next_btn {
+        icon-name: "net.armatik.Kitsune.media-skip-forward-symbolic";
+        focusable: false;
+        halign: end;
+        valign: center;
+        margin-end: 24;
+        tooltip-text: _("Next episode");
+        clicked => $on_next_episode();
+
+        styles ["flat", "player-center-btn"]
+      }
+
+      // Bottom bar
+      [overlay]
+      Gtk.Box bottom_box {
+        valign: end;
+        orientation: vertical;
+        margin-start: 12;
+        margin-end: 12;
+        margin-bottom: 12;
+        spacing: 4;
+
+        Gtk.Box {
+          spacing: 8;
+
+          Gtk.Label title_label {
+            hexpand: true;
+            ellipsize: end;
+            xalign: 0;
+
+            styles ["title-4", "player-text"]
+          }
+
+          Gtk.Button rotate_btn {
+            icon-name: "net.armatik.Kitsune.angled-arrows-symbolic";
+            tooltip-text: _("Rotate screen");
+            visible: false;
+            focusable: false;
+            clicked => $on_rotate_clicked();
+
+            styles ["player-rotate-btn"]
+          }
+
+          Gtk.DropDown speed_dropdown {
+            focusable: false;
+            notify::selected => $on_speed_changed();
+          }
+
+          Gtk.DropDown quality_dropdown {
+            visible: false;
+            focusable: false;
+            notify::selected => $on_quality_changed();
+          }
+        }
+
+        Gtk.Scale progress {
+          orientation: horizontal;
+          hexpand: true;
+          draw-value: false;
+          show-fill-level: true;
+          restrict-to-fill-level: false;
+          change-value => $on_seek();
+        }
+
+        Gtk.Box {
+          spacing: 8;
+
+          Gtk.Label position_label {
+            label: "0:00";
+            xalign: 0;
+
+            styles ["caption", "player-text", "numeric"]
+          }
+
+          Gtk.Box {
+            hexpand: true;
+          }
+
+          Gtk.Box {
+            spacing: 4;
+            valign: center;
+
+            Gtk.Button volume_btn {
+              icon-name: "net.armatik.Kitsune.audio-volume-high-symbolic";
+              focusable: false;
+              tooltip-text: _("Volume");
+              clicked => $on_volume_toggle();
+
+              styles ["flat", "circular", "player-text"]
+            }
+
+            Gtk.Scale volume_scale {
+              orientation: horizontal;
+              draw-value: false;
+              hexpand: false;
+              width-request: 80;
+              adjustment: Gtk.Adjustment {
+                lower: 0;
+                upper: 1;
+                step-increment: 0.05;
+                page-increment: 0.1;
+              };
+              change-value => $on_volume_change();
+            }
+          }
+
+          Gtk.Label duration_label {
+            label: "0:00";
+            xalign: 1;
+
+            styles ["caption", "player-text", "numeric"]
+          }
+        }
+      }
+    }
+
+    [overlay]
+    Gtk.Label seek_label {
+      visible: false;
+      halign: center;
+      valign: center;
+      margin-top: 120;
+
+      styles ["title-1", "player-text"]
+    }
+
+    [overlay]
+    Gtk.Button skip_btn {
+      label: _("Skip Intro");
+      visible: false;
+      halign: end;
+      valign: end;
+      margin-end: 24;
+      margin-bottom: 100;
+      focusable: false;
+      clicked => $on_skip();
+
+      styles ["pill", "suggested-action"]
+    }
+  };
+}

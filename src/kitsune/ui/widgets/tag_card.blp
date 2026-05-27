@@ -1,0 +1,97 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+using Gtk 4.0;
+using Adw 1;
+
+template $KitsuneTagCard: Gtk.FlowBoxChild {
+  Gtk.Box {
+    orientation: vertical;
+    spacing: 6;
+    margin-start: 6;
+    margin-end: 6;
+    margin-top: 6;
+    margin-bottom: 6;
+    width-request: 180;
+
+    Adw.Clamp {
+      maximum-size: 180;
+
+      Gtk.Overlay card_overlay {
+        width-request: 180;
+        height-request: 140;
+        overflow: hidden;
+
+        Gtk.Box card_bg {
+          width-request: 180;
+          height-request: 140;
+          halign: fill;
+          valign: fill;
+
+          styles ["card"]
+        }
+
+        [overlay]
+        Gtk.Box {
+          orientation: vertical;
+          halign: center;
+          valign: center;
+          spacing: 6;
+
+          Gtk.Label icon_label {
+            halign: center;
+          }
+        }
+
+        [overlay]
+        Gtk.Image sync_badge {
+          halign: end;
+          valign: start;
+          margin-top: 6;
+          margin-end: 6;
+          icon-name: "net.armatik.Kitsune.cloud-filled-symbolic";
+          pixel-size: 18;
+          visible: false;
+
+          styles ["tag-card-sync-badge"]
+        }
+
+        [overlay]
+        Gtk.Button delete_badge {
+          halign: end;
+          valign: start;
+          margin-top: 4;
+          margin-end: 4;
+          icon-name: "net.armatik.Kitsune.user-trash-symbolic";
+          visible: false;
+          tooltip-text: _("Delete tag");
+
+          styles ["flat", "circular", "tag-card-delete-badge"]
+        }
+      }
+    }
+
+    Adw.Clamp {
+      maximum-size: 252;
+
+      Gtk.Box {
+        orientation: vertical;
+
+        Gtk.Label title_label {
+          wrap: true;
+          max-width-chars: 20;
+          lines: 1;
+          ellipsize: end;
+          halign: center;
+
+          styles ["heading"]
+        }
+
+        Gtk.Label count_label {
+          halign: center;
+
+          styles ["dim-label", "caption"]
+        }
+      }
+    }
+  }
+}

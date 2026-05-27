@@ -1,0 +1,211 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+using Gtk 4.0;
+using Adw 1;
+
+template $AuthDialog: Adw.Dialog {
+  content-width: 400;
+  content-height: 680;
+  width-request: 280;
+  height-request: 400;
+  title: _("Authorization");
+
+  child: Adw.ToastOverlay toast_overlay {
+    child: Adw.ToolbarView toolbar {
+      extend-content-to-top-edge: true;
+
+      [top]
+      Adw.HeaderBar header_bar {
+        show-title: false;
+      }
+
+      content: Gtk.ScrolledWindow {
+        hscrollbar-policy: never;
+
+        child: Gtk.Box {
+          orientation: vertical;
+
+          // Hero image + gradient (scrolls with content)
+          Gtk.Overlay {
+            Gtk.Picture hero_picture {
+              height-request: 500;
+              content-fit: cover;
+              opacity: 0;
+            }
+
+            [overlay]
+            Gtk.Box {
+              height-request: 500;
+              orientation: vertical;
+
+              styles ["auth-hero-gradient"]
+            }
+
+            // Logo block centered in visible hero area (above form overlap)
+            [overlay]
+            Gtk.Box logo_block {
+              orientation: vertical;
+              halign: center;
+              valign: start;
+              spacing: 8;
+              margin-top: 80;
+
+              Gtk.Image logo_image {
+                pixel-size: 96;
+                halign: center;
+              }
+
+              Gtk.Label {
+                label: "AniLiberty";
+
+                styles ["title-2", "auth-title"]
+              }
+            }
+          }
+
+          // Form — overlaps hero via CSS negative margin
+          Gtk.Box {
+            orientation: vertical;
+            spacing: 12;
+            margin-start: 16;
+            margin-end: 16;
+            margin-bottom: 24;
+
+            styles ["auth-form"]
+
+            Gtk.Entry login_entry {
+              placeholder-text: _("Login");
+            }
+
+            Gtk.PasswordEntry password_entry {
+              placeholder-text: _("Password");
+              show-peek-icon: true;
+            }
+
+            Gtk.Button login_button {
+              label: _("Sign in");
+              clicked => $on_login_clicked();
+
+              styles ["suggested-action", "pill"]
+            }
+
+            Gtk.Separator {
+              margin-top: 4;
+              margin-bottom: 4;
+            }
+
+            // Social buttons — repositioned via breakpoint
+            Gtk.Grid social_grid {
+              row-spacing: 4;
+              column-spacing: 4;
+              column-homogeneous: true;
+
+              Gtk.Button vk_button {
+                label: "VK";
+                hexpand: true;
+                sensitive: false;
+                tooltip-text: _("Authorization via this method is unavailable");
+                styles ["flat"]
+                layout { row: 0; column: 0; }
+              }
+
+              Gtk.Button google_button {
+                label: "Google";
+                hexpand: true;
+                sensitive: false;
+                tooltip-text: _("Authorization via this method is unavailable");
+                styles ["flat"]
+                layout { row: 0; column: 1; }
+              }
+
+              Gtk.Button discord_button {
+                label: "Discord";
+                hexpand: true;
+                sensitive: false;
+                tooltip-text: _("Authorization via this method is unavailable");
+                styles ["flat"]
+                layout { row: 0; column: 2; }
+              }
+
+              Gtk.Button patreon_button {
+                label: "Patreon";
+                hexpand: true;
+                sensitive: false;
+                tooltip-text: _("Authorization via this method is unavailable");
+                styles ["flat"]
+                layout { row: 0; column: 3; }
+              }
+            }
+
+            Gtk.Separator {
+              margin-top: 4;
+              margin-bottom: 4;
+            }
+
+            // OTP button
+            Gtk.Button otp_button {
+              height-request: 52;
+              clicked => $on_otp_clicked();
+
+              child: Gtk.Stack otp_stack {
+                transition-type: crossfade;
+
+                Gtk.StackPage {
+                  name: "idle";
+                  child: Gtk.Label {
+                    label: _("Show login code");
+                  };
+                }
+
+                Gtk.StackPage {
+                  name: "loading";
+                  child: Adw.Spinner {};
+                }
+
+                Gtk.StackPage {
+                  name: "code";
+                  child: Gtk.Box {
+                    orientation: vertical;
+                    halign: center;
+                    spacing: 2;
+
+                    Gtk.Label otp_code_label {
+                      label: "------";
+
+                      styles ["title-2", "monospace"]
+                    }
+
+                    Gtk.Label otp_timer_label {
+                      label: "";
+
+                      styles ["caption", "dim-label"]
+                    }
+                  };
+                }
+              };
+
+              styles ["pill"]
+            }
+
+            // Links
+            Gtk.Box links_box {
+              halign: center;
+              spacing: 8;
+              margin-top: 8;
+
+              Gtk.LinkButton register_link {
+                label: _("Register ↗");
+                uri: "https://anilibria.top/app/auth/registration/newRegistration";
+              }
+
+              Gtk.LinkButton forgot_link {
+                label: _("Forgot password? ↗");
+                uri: "https://anilibria.top/app/auth/password/forgetPassword";
+              }
+            }
+          }
+        };
+      };
+    };
+  };
+}
